@@ -13,3 +13,4 @@ Thumbs.db
 # Ignorar arquivos de banco local ou sensíveis
 db.sql
 .env
+*.a
