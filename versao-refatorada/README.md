@@ -15,9 +15,8 @@ Esta é uma versão reorganizada do sistema original de investimentos, com foco 
 versao-refatorada/
 ├── app/
 │   ├── Models/
-│   ├── Controllers/
 │   ├── Views/
-│   └── Core/
+│   └── Controllers/
 ├── public/
 ├── config/
 └── routes/
@@ -26,4 +25,3 @@ versao-refatorada/
 ## 🎯 Objetivo
 
 Demonstrar domínio de organização de projetos PHP em uma estrutura que se aproxima do padrão MVC, ideal para apresentar em processos seletivos ou como exemplo de evolução técnica.
-

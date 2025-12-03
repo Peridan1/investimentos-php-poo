@@ -14,13 +14,13 @@ CREATE TABLE compras (
 );
 
 INSERT INTO compras (ativo, quantidade, valor_unitario, data_compra) VALUES
-('UNIALFA', 5, 10.00, '2025-03-14'),
-('UNIALFA', 4, 10.00, '2025-03-14'),
-('UNIALFA', 4, 10.00, '2025-03-14'),
-('UNIALFA', 4, 10.00, '2025-03-14'),
-('UNIALFA', 20, 8.00, '2025-03-21'),
-('UNIALFA', 18, 4.00, '2025-03-21'),
-('CPLE6', 5, 9.00, '2025-03-21');
+('PETR4', 10, 37.50, '2025-01-10'),
+('PETR4', 5, 38.10, '2025-02-05'),
+('VALE3', 3, 68.20, '2025-02-14'),
+('VALE3', 7, 67.50, '2025-03-02'),
+('ITSA4', 20, 10.30, '2025-03-14'),
+('ITSA4', 15, 10.10, '2025-03-22'),
+('BBAS3', 8, 47.90, '2025-03-29');
 
 DROP TABLE IF EXISTS dividendos;
 CREATE TABLE dividendos (
@@ -31,10 +31,12 @@ CREATE TABLE dividendos (
 );
 
 INSERT INTO dividendos (ativo, valor, data_recebimento) VALUES
-('UNIALFA', 380.00, '2025-03-28'),
-('UNIALFA', 100.00, '2025-03-28'),
-('CPLE6', 800.00, '2025-05-09'),
-('CPLE6', 90.00, '2025-04-16');
+('PETR4', 15.32, '2025-03-30'),
+('PETR4', 7.50, '2025-04-10'),
+('VALE3', 52.00, '2025-04-15'),
+('VALE3', 17.40, '2025-05-01'),
+('ITSA4', 12.50, '2025-05-10'),
+('BBAS3', 22.00, '2025-05-18');
 
 DROP TABLE IF EXISTS usuarios;
 CREATE TABLE usuarios (
@@ -44,3 +46,10 @@ CREATE TABLE usuarios (
   senha VARCHAR(255) NOT NULL,
   criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO usuarios (nome, email, senha) VALUES
+('Daniel Pereira', 'daniel@example.com', '$2y$10$UJrV0XaT.zwRQ9Mvtr/K8Oafl4ty2.TG54PYGOmbhTGo4aO6ULezi'),
+('Maria Silva', 'maria.silva@example.com', '$2y$10$UJrV0XaT.zwRQ9Mvtr/K8Oafl4ty2.TG54PYGOmbhTGo4aO6ULezi'),
+('João Almeida', 'joao.almeida@example.com', '$2y$10$UJrV0XaT.zwRQ9Mvtr/K8Oafl4ty2.TG54PYGOmbhTGo4aO6ULezi'),
+('Carla Torres', 'carla.torres@example.com', '$2y$10$UJrV0XaT.zwRQ9Mvtr/K8Oafl4ty2.TG54PYGOmbhTGo4aO6ULezi'),
+('Lucas Ferreira', 'lucas.ferreira@example.com', '$2y$10$UJrV0XaT.zwRQ9Mvtr/K8Oafl4ty2.TG54PYGOmbhTGo4aO6ULezi');
