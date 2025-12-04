@@ -1,17 +1,17 @@
 <?php
 
 $router->get('/login', function () {
-    require __DIR__ . '/../views/auth/login.php';
+    require BASE_PATH . 'views/auth/login.php';
 });
 
-$router->post('/login', function () {
-    require __DIR__ . '/../controllers/LoginController.php';
+$router->get('/registro', function () {
+    require BASE_PATH . 'views/auth/registro.php';
+});
+
+$router->post('/registro', function () {
+    require BASE_PATH . 'views/auth/registro.php';
 });
 
 $router->get('/logout', function () {
-    require __DIR__ . '/../logout.php';
-});
-
-$router->get('/registrar', function () {
-    require __DIR__ . '/../views/auth/registro.php';
+    require BASE_PATH . 'logout.php';
 });

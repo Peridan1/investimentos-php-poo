@@ -14,3 +14,5 @@
 
     <title><?= $title ?? 'Gestão de Ativos' ?></title>
 </head>
+
+<body>

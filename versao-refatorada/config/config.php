@@ -10,7 +10,8 @@
  *   require __DIR__ . '/config/config.php';
  */
 
-define('BASE_URL', '/versao-refatorada/');
+define('BASE_URL', '/');
+
 
 if (!defined('APP_CONFIG_LOADED')) {
     define('APP_CONFIG_LOADED', true);

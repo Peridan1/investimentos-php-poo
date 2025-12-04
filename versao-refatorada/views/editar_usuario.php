@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuarioObj->atualizarUsuario($_POST['id'], $_POST['nome'], $_POST['email']);
-    header('Location: ' . ROUTE_USUARIOS);
+    header('Location: ' . '/usuarios');
     exit;
 }
 
@@ -51,7 +51,7 @@ include BASE_PATH . 'includes/head.php';
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Salvar</button>
-                    <a href="<?= ROUTE_USUARIOS ?>" class="btn btn-secondary">Cancelar</a>
+                    <a href="<?= '/usuarios' ?>" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>

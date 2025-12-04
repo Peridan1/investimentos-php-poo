@@ -1,5 +1,4 @@
 <?php
-
 class Router
 {
     private array $routes = [];
@@ -14,12 +13,18 @@ class Router
         $this->routes['POST'][$path] = $handler;
     }
 
+    public function match(array $methods, string $path, callable $handler)
+    {
+        foreach ($methods as $method) {
+            $this->routes[$method][$path] = $handler;
+        }
+    }
+
     public function dispatch(string $basePath = '')
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        // remove prefixo BASE_PATH se houver
         if ($basePath && str_starts_with($uri, $basePath)) {
             $uri = substr($uri, strlen($basePath));
         }
