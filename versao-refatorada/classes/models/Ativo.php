@@ -1,17 +1,12 @@
 <?php
 
-class Ativo
+class Ativo extends BaseModel
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getConnection();
-    }
+    // usa tabela compras para calcular ativos
+    protected string $table = 'compras';
 
     /**
      * Calcula preço médio de todos os ativos.
-     * @return array Exemplo: [ ['ativo'=>'PETR4','total_quantidade'=>100,'total_valor'=>2500,'preco_medio'=>25.00], ... ]
      */
     public function calcularPrecoMedio(): array
     {
@@ -20,7 +15,7 @@ class Ativo
                 ativo,
                 SUM(quantidade) AS total_quantidade,
                 SUM(quantidade * valor_unitario) AS total_valor
-            FROM compras
+            FROM {$this->table}
             GROUP BY ativo
         ";
 
@@ -39,7 +34,6 @@ class Ativo
 
     /**
      * Calcula preço médio de um ativo específico.
-     * @return array|false
      */
     public function calcularPrecoMedioPorAtivo(string $ativo): array|false
     {
@@ -48,7 +42,7 @@ class Ativo
                 ativo,
                 SUM(quantidade) AS total_quantidade,
                 SUM(quantidade * valor_unitario) AS total_valor
-            FROM compras
+            FROM {$this->table}
             WHERE ativo = :ativo
             GROUP BY ativo
         ";
@@ -64,20 +58,11 @@ class Ativo
                 : 0;
         }
 
-        return $data;
+        return $data ?: false;
     }
 
     /**
-     * Lista todos os ativos únicos.
-     */
-    public function listarAtivos(): array
-    {
-        $sql = "SELECT DISTINCT ativo FROM compras ORDER BY ativo";
-        return $this->db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    /**
-     * Calcula preço médio com filtro de período.
+     * Calcula preço médio de ativos em um período.
      */
     public function calcularPrecoMedioPorPeriodo(string $dataInicio, string $dataFim): array
     {
@@ -86,7 +71,7 @@ class Ativo
                 ativo,
                 SUM(quantidade) AS total_quantidade,
                 SUM(quantidade * valor_unitario) AS total_valor
-            FROM compras
+            FROM {$this->table}
             WHERE data_compra BETWEEN :inicio AND :fim
             GROUP BY ativo
         ";

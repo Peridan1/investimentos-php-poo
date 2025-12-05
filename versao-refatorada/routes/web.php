@@ -18,27 +18,9 @@ $router->get('/dashboard', function () {
     view('dashboard');
 });
 
-// Preço Médio (Ativo)
-$router->get('/ativo', function () {
-
-    require_once BASE_PATH . 'classes/Ativo.php';
-
-    $ativoObj = new Ativo();
-
-    $dataInicio = $_GET['data_inicio'] ?? null;
-    $dataFim    = $_GET['data_fim'] ?? null;
-
-    if ($dataInicio && $dataFim) {
-        $relatorio = $ativoObj->calcularPrecoMedioPorPeriodo($dataInicio, $dataFim);
-    } else {
-        $relatorio = $ativoObj->calcularPrecoMedio();
-    }
-
-    view('ativo', [
-        'relatorio' => $relatorio,
-        'title'     => "Preço Médio | " . APP_NAME
-    ]);
-});
+$router->get('/ativos', 'AtivoController@index');          // lista geral
+$router->get('/ativo', 'AtivoController@show');            // relatório com filtro de período
+$router->get('/ativos/{ativo}', 'AtivoController@detalhe'); // detalhe de um ativo específico
 
 // Usuários
 $router->match(['GET', 'POST'], '/usuarios', function () {
@@ -78,49 +60,6 @@ $router->match(['GET', 'POST'], '/usuarios', function () {
 
 $router->get('/usuarios/editar', function () {
     view('editar_usuario');
-});
-
-// Dividendos
-$router->match(['GET', 'POST'], '/dividendos', function () {
-    require_once BASE_PATH . 'classes/Dividendo.php';
-    require_once BASE_PATH . 'config/config.php';
-
-    $dividendo = new Dividendo();
-    $mensagem  = '';
-    $resultado = null;
-
-    // Excluir
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'excluir') {
-        $resultado = $dividendo->excluirDividendo((int) $_POST['id']);
-        $mensagem  = $resultado ? "Dividendo excluído com sucesso!" : "Erro ao excluir dividendo.";
-    }
-
-    // Cadastrar
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['acao'] ?? '') === 'cadastrar') {
-        $resultado = $dividendo->adicionarDividendo(
-            $_POST['ativo'],
-            (float)$_POST['valor'],
-            $_POST['data_recebimento']
-        );
-        $mensagem = $resultado ? "Dividendo cadastrado com sucesso!" : "Erro ao cadastrar dividendo.";
-    }
-
-    // Filtro GET
-    $dataInicio = $_GET['data_inicio'] ?? null;
-    $dataFim    = $_GET['data_fim'] ?? null;
-
-    $lista = $dataInicio && $dataFim
-        ? $dividendo->listarPorPeriodo($dataInicio, $dataFim)
-        : $dividendo->listarDividendos();
-
-    view('dividendos', [
-        'title' => "Dividendos | " . APP_NAME,
-        'mensagem' => $mensagem,
-        'resultado' => $resultado,
-        'lista' => $lista,
-        'dataInicio' => $dataInicio,
-        'dataFim' => $dataFim
-    ]);
 });
 
 // Notícias
@@ -168,19 +107,6 @@ $router->post('/compras/cadastrar', function () {
     exit;
 });
 
-$router->get('/compras', function () {
-
-    require_once BASE_PATH . 'classes/Compra.php';
-    $compraObj = new Compra();
-
-    $lista = $compraObj->listarCompras();
-
-    view('compras/listar', [
-        'compras' => $lista,
-        'title'   => "Listar Compras | " . APP_NAME
-    ]);
-});
-
 $router->get('/registro', function () {
     require BASE_PATH . 'views/auth/registro.php';
 });
@@ -188,3 +114,18 @@ $router->get('/registro', function () {
 $router->get('/login', function () {
     require VIEW_PATH . 'auth/login.php';
 });
+
+
+
+$router->get('/dividendos', 'DividendoController@index');
+$router->get('/dividendos/{id}', 'DividendoController@show');
+$router->post('/dividendos', 'DividendoController@store');
+$router->post('/dividendos/{id}/update', 'DividendoController@update');
+$router->post('/dividendos/{id}/delete', 'DividendoController@destroy');
+
+$router->get('/compras', 'CompraController@index');
+$router->post('/compras', 'CompraController@store');
+$router->post('/compras/{id}/delete', 'CompraController@destroy');
+
+$router->get('/ativos', 'AtivoController@index');
+$router->get('/ativos/{ativo}', 'AtivoController@show');
