@@ -1,21 +1,20 @@
 <?php
-require_once dirname(__DIR__, 2) . '/config/config.php';
-
-session_start();
-
-// Carrega helpers
-require_once BASE_PATH . 'includes/helpers.php';
+// A sessão e o config já são carregados pelo bootstrap (config.php)
 
 $title = "Login | " . APP_NAME;
 
 // Lógica de login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
+
     $usuario = new Usuario();
     $login = $usuario->validarLogin($_POST['email'], $_POST['senha']);
 
     if ($login) {
+        // Regenera o ID da sessão após login (previne session fixation)
+        session_regenerate_id(true);
         $_SESSION['usuario'] = $login;
-        header("Location: " . '/dashboard');
+        header("Location: /dashboard");
         exit;
     } else {
         $_SESSION['flash']['erro'] = 'Credenciais inválidas. Tente novamente.';
@@ -36,6 +35,7 @@ include BASE_PATH . 'includes/head.php';
             <?php include BASE_PATH . 'includes/alert.php'; ?>
 
             <form method="POST">
+                <?= csrf_field() ?>
 
                 <div class="form-group mb-3">
                     <label for="email">E-mail</label>
@@ -51,7 +51,7 @@ include BASE_PATH . 'includes/head.php';
             </form>
 
             <div class="text-center mt-3">
-                <a href="<?= '/registro' ?>">Criar conta</a>
+                <a href="/registro">Criar conta</a>
             </div>
         </div>
     </main>

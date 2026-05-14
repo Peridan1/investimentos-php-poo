@@ -1,9 +1,9 @@
 <?php
-require_once dirname(__DIR__, 2) . '/config/config.php';
-
-session_start();
+// A sessão e o config já são carregados pelo bootstrap (config.php)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
+
     $usuario = new Usuario();
 
     try {
@@ -13,12 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Não foi possível registrar o usuário.");
         }
 
+        session_regenerate_id(true);
         $_SESSION['usuario'] = [
             'nome' => $_POST['nome'],
             'email' => $_POST['email']
         ];
 
-        header('Location: ' . BASE_URL . 'dashboard');
+        header('Location: /dashboard');
         exit;
     } catch (Exception $e) {
         $_SESSION['flash']['erro'] = $e->getMessage();
@@ -27,9 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $title = "Registro | " . APP_NAME;
 
-include BASE_PATH . 'includes/helpers.php';
 include BASE_PATH . 'includes/head.php';
-
 include BASE_PATH . 'includes/header.php';
 ?>
 
@@ -46,6 +45,8 @@ include BASE_PATH . 'includes/header.php';
         <?php endif; ?>
 
         <form method="POST">
+            <?= csrf_field() ?>
+
             <div class="form-group mb-3">
                 <label for="nome">Nome</label>
                 <input type="text" class="form-control" id="nome" name="nome" required>
