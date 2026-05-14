@@ -1,9 +1,5 @@
 <?php
 
-if (!defined('APP_CONFIG_LOADED')) {
-    require_once __DIR__ . '/../config/config.php';
-}
-
 class RelatorioService
 {
     private Compra $compra;
@@ -32,8 +28,8 @@ class RelatorioService
 
         // Dividendos por ativo
         $dividendos = $dataInicio && $dataFim
-            ? $this->dividendo->calcularDividendosPorPeriodo($dataInicio, $dataFim)
-            : $this->dividendo->calcularDividendosPorAtivo();
+            ? $this->dividendo->calcularPorPeriodo($dataInicio, $dataFim)
+            : $this->dividendo->calcularPorAtivo();
 
         // Total de dividendos
         $totalDividendos = $dataInicio && $dataFim
@@ -54,8 +50,8 @@ class RelatorioService
     public function getGraficoDividendos(string $dataInicio = null, string $dataFim = null): array
     {
         $dividendos = $dataInicio && $dataFim
-            ? $this->dividendo->calcularDividendosPorPeriodo($dataInicio, $dataFim)
-            : $this->dividendo->calcularDividendosPorAtivo();
+            ? $this->dividendo->calcularPorPeriodo($dataInicio, $dataFim)
+            : $this->dividendo->calcularPorAtivo();
 
         return [
             'labels' => array_column($dividendos, 'ativo'),
