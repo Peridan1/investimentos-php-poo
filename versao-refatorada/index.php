@@ -1,7 +1,7 @@
 <?php
 
 require __DIR__ . '/config/config.php';
-require __DIR__ . '/classes/Router.php';
+require __DIR__ . '/classes/core/Router.php';
 
 // Instancia o roteador
 $router = new Router();

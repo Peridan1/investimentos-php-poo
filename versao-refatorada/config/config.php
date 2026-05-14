@@ -73,7 +73,7 @@ if (!defined('APP_CONFIG_LOADED')) {
 
     // Carrega .env com tratamento de erro
     try {
-        app_load_env(CONFIG_PATH . '.env');
+        app_load_env(BASE_PATH . '.env');
     } catch (RuntimeException $e) {
         if (defined('DEBUG') && DEBUG) {
             die("Erro ao carregar configuração: " . $e->getMessage());
@@ -128,28 +128,49 @@ if (!defined('APP_CONFIG_LOADED')) {
         error_reporting(E_ALL);
         ini_set('display_errors', '1');
         ini_set('log_errors', '1');
-        ini_set('error_log', BASE_PATH . 'logs/php_errors.log');
+        ini_set('error_log', 'php://stderr');
     } else {
         error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
         ini_set('display_errors', '0');
         ini_set('log_errors', '1');
-        ini_set('error_log', BASE_PATH . 'logs/php_errors.log');
+        ini_set('error_log', 'php://stderr');
     }
 
     // ------------------------------------------------------------------
     // Autoloader simples para classes planas
     // ------------------------------------------------------------------
     spl_autoload_register(function ($class) {
-        $file = CLASS_PATH . $class . '.php';
-        if (is_readable($file)) {
-            require $file;
+        $directories = [
+            '',
+            'controllers/',
+            'models/',
+            'core/',
+            'services/'
+        ];
+
+        foreach ($directories as $dir) {
+            $file = CLASS_PATH . $dir . $class . '.php';
+            if (is_readable($file)) {
+                require $file;
+                return;
+            }
         }
     });
 
     // ------------------------------------------------------------------
-    // Cria diretório de logs se não existir
+    // Sessão centralizada com hardening de segurança
     // ------------------------------------------------------------------
-    if (!is_dir(BASE_PATH . 'logs')) {
-        mkdir(BASE_PATH . 'logs', 0755, true);
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.use_strict_mode', '1');
+    // ini_set('session.cookie_secure', '1'); // Habilitar quando usar HTTPS
+
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    // ------------------------------------------------------------------
+    // Helpers globais (CSRF, auth, etc.)
+    // ------------------------------------------------------------------
+    require_once BASE_PATH . 'includes/helpers.php';
 }

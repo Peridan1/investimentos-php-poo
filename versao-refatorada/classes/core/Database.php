@@ -45,15 +45,6 @@ class Database
             throw new RuntimeException('Falha na conexão com o banco de dados.', 0, $e);
         }
 
-        if (!self::$pdo instanceof PDO) {
-            throw new RuntimeException('Database connection failed unexpectedly.');
-        }
-        // Reconecta se a conexão foi perdida
-        if (self::$pdo && !self::$pdo->query('SELECT 1')) {
-            self::$pdo = null;
-        }
-
-
         return self::$pdo;
     }
 }
