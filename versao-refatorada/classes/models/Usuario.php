@@ -1,14 +1,8 @@
 <?php
 
-class Usuario
+class Usuario extends BaseModel
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        // Usa nosso Singleton centralizado
-        $this->db = Database::getConnection();
-    }
+    protected string $table = 'usuarios';
 
     /**
      * Cria um novo usuário.
@@ -18,7 +12,7 @@ class Usuario
         try {
             $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO usuarios (nome, email, senha)
+            $sql = "INSERT INTO {$this->table} (nome, email, senha)
                 VALUES (:nome, :email, :senha)";
             $stmt = $this->db->prepare($sql);
 
@@ -28,10 +22,10 @@ class Usuario
                 ':senha' => $senhaHash,
             ]);
         } catch (PDOException $e) {
-            // Log do erro se necessário
             return false;
         }
     }
+
     /**
      * Valida login por email/senha.
      * @return array|false Dados do usuário (sem senha) ou false.
@@ -49,23 +43,24 @@ class Usuario
 
     /**
      * Busca usuário por email.
-     * @return array|false
      */
     public function findByEmail(string $email): array|false
     {
-        $sql = "SELECT * FROM usuarios WHERE email = :email LIMIT 1";
+        $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':email' => $email]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
-     * Lista todos os usuários.
+     * Lista todos os usuários (sem senha).
      */
     public function listarUsuarios(): array
     {
-        $sql = "SELECT id, nome, email, criado_em FROM usuarios";
-        return $this->db->query($sql)->fetchAll();
+        $sql = "SELECT id, nome, email, criado_em FROM {$this->table}";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -73,21 +68,18 @@ class Usuario
      */
     public function excluirUsuario(int $id): void
     {
-        $sql = "DELETE FROM usuarios WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $id]);
+        $this->delete($id);
     }
 
     /**
-     * Busca um usuário por ID.
-     * @return array|false
+     * Busca um usuário por ID (sem senha).
      */
     public function buscarUsuario(int $id): array|false
     {
-        $sql = "SELECT id, nome, email FROM usuarios WHERE id = :id";
+        $sql = "SELECT id, nome, email FROM {$this->table} WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -95,7 +87,7 @@ class Usuario
      */
     public function atualizarUsuario(int $id, string $nome, string $email): void
     {
-        $sql = "UPDATE usuarios
+        $sql = "UPDATE {$this->table}
                 SET nome = :nome, email = :email
                 WHERE id = :id";
         $stmt = $this->db->prepare($sql);
