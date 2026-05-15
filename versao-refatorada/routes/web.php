@@ -7,26 +7,31 @@ function view(string $path, array $data = [])
     require BASE_PATH . "views/{$path}.php";
 }
 
-// ==================== ROTAS ====================
+// ==================== ROTAS PÚBLICAS ====================
 
-// Dashboard
-$router->get('/', function () {
-    view('dashboard');
-});
+// Dashboard (público — pode conter dados gerais)
+$router->get('/', 'DashboardController@index');
+$router->get('/dashboard', 'DashboardController@index');
 
-$router->get('/dashboard', function () {
-    view('dashboard');
-});
+// Relatório
+$router->get('/relatorio', 'RelatorioController@index');
 
-$router->get('/ativos', 'AtivoController@index');          // lista geral
-$router->get('/ativo', 'AtivoController@show');            // relatório com filtro de período
-$router->get('/ativos/{ativo}', 'AtivoController@detalhe'); // detalhe de um ativo específico
+// Notícias
+$router->get('/noticias', 'NoticiaController@index');
+
+// Cotas
+$router->get('/cotas', 'CotaController@index');
+
+// Ativos (leitura pública)
+$router->get('/ativos', 'AtivoController@index');
+$router->get('/ativo', 'AtivoController@show');
+$router->get('/ativos/{ativo}', 'AtivoController@detalhe');
+
+// ==================== ROTAS PROTEGIDAS ====================
 
 // Usuários
 $router->match(['GET', 'POST'], '/usuarios', function () {
-    require_once BASE_PATH . 'classes/Usuario.php';
-
-    session_start();
+    requireAuth();
 
     $usuarioObj = new Usuario();
     $mensagem = null;
@@ -34,6 +39,7 @@ $router->match(['GET', 'POST'], '/usuarios', function () {
 
     // Exclusão
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir'], $_POST['id'])) {
+        csrf_verify();
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
         if ($id !== false) {
@@ -57,45 +63,34 @@ $router->match(['GET', 'POST'], '/usuarios', function () {
     ]);
 });
 
-
 $router->get('/usuarios/editar', function () {
+    requireAuth();
     view('editar_usuario');
 });
 
-// Notícias
-$router->match(['GET'], '/noticias', function () {
-    require BASE_PATH . 'views/noticias.php';
-});
-
-
-// Relatório
-$router->get('/relatorio', function () {
-    view('relatorio');
-});
-
-// Cotas (sem lógica pesada → deixa na view)
-$router->get('/cotas', function () {
-    view('cotas');
-});
-
+// Compras
+$router->get('/compras', 'CompraController@index');
+$router->post('/compras', 'CompraController@store');
+$router->post('/compras/{id}/delete', 'CompraController@destroy');
 
 $router->get('/compras/cadastrar', function () {
+    requireAuth();
     view('compras/cadastrar', [
         'mensagem' => $_SESSION['mensagem'] ?? null,
         'title'    => "Cadastrar Compra | " . APP_NAME
     ]);
-
     unset($_SESSION['mensagem']);
 });
 
 $router->post('/compras/cadastrar', function () {
-    require_once BASE_PATH . 'classes/Compra.php';
+    requireAuth();
+    csrf_verify();
 
     $compra = new Compra();
-    $ok = $compra->adicionarCompra(
-        $_POST['ativo'],
-        $_POST['quantidade'],
-        $_POST['valor_unitario'],
+    $ok = $compra->adicionar(
+        trim($_POST['ativo'] ?? ''),
+        (int) $_POST['quantidade'],
+        (float) $_POST['valor_unitario'],
         $_POST['data_compra']
     );
 
@@ -107,25 +102,9 @@ $router->post('/compras/cadastrar', function () {
     exit;
 });
 
-$router->get('/registro', function () {
-    require BASE_PATH . 'views/auth/registro.php';
-});
-
-$router->get('/login', function () {
-    require VIEW_PATH . 'auth/login.php';
-});
-
-
-
+// Dividendos
 $router->get('/dividendos', 'DividendoController@index');
 $router->get('/dividendos/{id}', 'DividendoController@show');
 $router->post('/dividendos', 'DividendoController@store');
 $router->post('/dividendos/{id}/update', 'DividendoController@update');
 $router->post('/dividendos/{id}/delete', 'DividendoController@destroy');
-
-$router->get('/compras', 'CompraController@index');
-$router->post('/compras', 'CompraController@store');
-$router->post('/compras/{id}/delete', 'CompraController@destroy');
-
-$router->get('/ativos', 'AtivoController@index');
-$router->get('/ativos/{ativo}', 'AtivoController@show');
