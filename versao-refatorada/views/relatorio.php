@@ -2,13 +2,11 @@
 // Dados injetados pelo RelatorioController:
 // $mensagemErro, $dadosGrafico, $title
 
-include BASE_PATH . 'includes/head.php';
+require BASE_PATH . 'includes/header.php';
 ?>
 
-<?php include BASE_PATH . 'includes/header.php'; ?>
-
-<main class="container">
-    <h1>Relatório — Investimentos x Dividendos</h1>
+<div class="container-fluid p-0">
+    <h1 class="mb-4">Relatório — Investimentos x Dividendos</h1>
 
     <!-- Exibição de erros -->
     <?php if (!empty($mensagemErro)): ?>
@@ -17,21 +15,29 @@ include BASE_PATH . 'includes/head.php';
     </div>
 
     <?php if (DEBUG): ?>
-    <p class="debug-info">
+    <p class="text-muted small">
         DEBUG: verifique logs ou serviço RelatorioService.
     </p>
     <?php endif; ?>
 
     <!-- Sem dados -->
     <?php elseif (empty($dadosGrafico)): ?>
-    <p>Nenhum dado disponível para gerar o relatório.</p>
+    <div class="card">
+        <div class="card-body text-center text-muted py-5">
+            <i class="fas fa-chart-bar fa-3x mb-3"></i>
+            <p>Nenhum dado disponível para gerar o relatório.</p>
+        </div>
+    </div>
 
     <?php else: ?>
-    <div class="card p-3">
-        <canvas id="graficoInvestimentosDividendos"></canvas>
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Investimentos vs Dividendos</h6></div>
+        <div class="card-body">
+            <canvas id="graficoInvestimentosDividendos"></canvas>
+        </div>
     </div>
     <?php endif; ?>
-</main>
+</div>
 
 <!-- Script do Gráfico -->
 <?php if (!empty($dadosGrafico)): ?>
@@ -53,29 +59,29 @@ new Chart(ctx, {
         datasets: [{
                 label: 'Total Investido (R$)',
                 data: dadosInvestidos,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
+                backgroundColor: 'rgba(44, 123, 229, 0.5)',
+                borderColor: '#2c7be5',
+                borderWidth: 1,
+                borderRadius: 4
             },
             {
                 label: 'Dividendos Recebidos (R$)',
                 data: dadosDividendos,
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
+                backgroundColor: 'rgba(0, 210, 122, 0.5)',
+                borderColor: '#00d27a',
+                borderWidth: 1,
+                borderRadius: 4
             }
         ]
     },
     options: {
         responsive: true,
         scales: {
-            y: {
-                beginAtZero: true
-            }
+            y: { beginAtZero: true }
         }
     }
 });
 </script>
 <?php endif; ?>
 
-<?php include BASE_PATH . 'includes/footer.php'; ?>
+<?php require BASE_PATH . 'includes/footer.php'; ?>

@@ -11,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = $usuario->validarLogin($_POST['email'], $_POST['senha']);
 
     if ($login) {
-        // Regenera o ID da sessão após login (previne session fixation)
         session_regenerate_id(true);
         $_SESSION['usuario'] = $login;
         header("Location: /dashboard");
@@ -21,40 +20,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Cabeçalho padrão
-include BASE_PATH . 'includes/head.php';
+require BASE_PATH . 'includes/header.php';
 ?>
 
-<body>
-    <?php include BASE_PATH . 'includes/header.php'; ?>
+<div class="container-fluid p-0">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h1 class="mb-4 text-center h4">Entrar</h1>
 
-    <main class="container py-5">
-        <div class="card p-4 mx-auto" style="max-width: 420px;">
-            <h1 class="mb-4 text-center">Entrar</h1>
+                    <?php include BASE_PATH . 'includes/alert.php'; ?>
 
-            <?php include BASE_PATH . 'includes/alert.php'; ?>
+                    <form method="POST">
+                        <?= csrf_field() ?>
 
-            <form method="POST">
-                <?= csrf_field() ?>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" required autofocus>
+                        </div>
 
-                <div class="form-group mb-3">
-                    <label for="email">E-mail</label>
-                    <input type="email" class="form-control" id="email" name="email" required autofocus>
+                        <div class="mb-4">
+                            <label for="senha" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="senha" name="senha" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="/registro" class="text-muted small">Criar conta</a>
+                    </div>
                 </div>
-
-                <div class="form-group mb-4">
-                    <label for="senha">Senha</label>
-                    <input type="password" class="form-control" id="senha" name="senha" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">Entrar</button>
-            </form>
-
-            <div class="text-center mt-3">
-                <a href="/registro">Criar conta</a>
             </div>
         </div>
-    </main>
+    </div>
+</div>
 
-    <?php include BASE_PATH . 'includes/footer.php'; ?>
-</body>
+<?php require BASE_PATH . 'includes/footer.php'; ?>

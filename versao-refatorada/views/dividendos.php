@@ -1,9 +1,8 @@
 <?php
-require BASE_PATH . 'includes/head.php';
 require BASE_PATH . 'includes/header.php';
 ?>
 
-<main class="container">
+<div class="container-fluid p-0">
     <h1>Cadastro e Listagem de Dividendos</h1>
 
     <!-- Mensagens de Sucesso/Erro -->
@@ -14,89 +13,107 @@ require BASE_PATH . 'includes/header.php';
     <?php endif; ?>
 
     <!-- Formulário de Cadastro -->
-    <section class="card">
-        <h2>Novo Dividendo</h2>
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Novo Dividendo</h6></div>
+        <div class="card-body">
+            <form method="post" action="/dividendos" class="row g-3">
+                <?= csrf_field() ?>
+                <input type="hidden" name="acao" value="cadastrar">
 
-        <form method="post" action="/dividendos" class="form-cadastro">
-            <?= csrf_field() ?>
-            <input type="hidden" name="acao" value="cadastrar">
+                <div class="col-md-4">
+                    <label for="ativo" class="form-label">Ativo:</label>
+                    <input type="text" class="form-control" name="ativo" id="ativo" required>
+                </div>
 
-            <label for="ativo">Ativo:</label>
-            <input type="text" name="ativo" id="ativo" required>
+                <div class="col-md-4">
+                    <label for="valor" class="form-label">Valor Recebido (R$):</label>
+                    <input type="number" class="form-control" name="valor" id="valor" step="0.01" required>
+                </div>
 
-            <label for="valor">Valor Recebido (R$):</label>
-            <input type="number" name="valor" id="valor" step="0.01" required>
+                <div class="col-md-4">
+                    <label for="data_recebimento" class="form-label">Data de Recebimento:</label>
+                    <input type="date" class="form-control" name="data_recebimento" id="data_recebimento" required>
+                </div>
 
-            <label for="data_recebimento">Data de Recebimento:</label>
-            <input type="date" name="data_recebimento" id="data_recebimento" required>
-
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </form>
-    </section>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Filtro de Período -->
-    <section class="card">
-        <h2>Filtrar Dividendos</h2>
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Filtrar Dividendos</h6></div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="data_inicio" class="form-label">Data Início:</label>
+                    <input type="date" class="form-control" name="data_inicio" id="data_inicio" value="<?= htmlspecialchars($dataInicio ?? '') ?>">
+                </div>
 
-        <form method="get" class="filtro-data">
-            <label for="data_inicio">Data Início:</label>
-            <input type="date" name="data_inicio" id="data_inicio" value="<?= htmlspecialchars($dataInicio ?? '') ?>">
+                <div class="col-md-4">
+                    <label for="data_fim" class="form-label">Data Fim:</label>
+                    <input type="date" class="form-control" name="data_fim" id="data_fim" value="<?= htmlspecialchars($dataFim ?? '') ?>">
+                </div>
 
-            <label for="data_fim">Data Fim:</label>
-            <input type="date" name="data_fim" id="data_fim" value="<?= htmlspecialchars($dataFim ?? '') ?>">
-
-            <button type="submit" class="btn btn-secondary">Filtrar</button>
-
-            <!-- Importante: voltar para a rota, não para arquivo -->
-            <a href="/dividendos" class="btn btn-outline">Limpar</a>
-        </form>
-    </section>
+                <div class="col-md-4 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-secondary"><i class="fas fa-filter me-1"></i> Filtrar</button>
+                    <a href="/dividendos" class="btn btn-outline-secondary">Limpar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Listagem de Dividendos -->
-    <section class="card">
-        <h2>Lista de Dividendos</h2>
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Lista de Dividendos</h6></div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ativo</th>
+                            <th>Valor (R$)</th>
+                            <th>Data de Recebimento</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($lista)): ?>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Nenhum dividendo encontrado.</td>
+                        </tr>
+                        <?php else: ?>
+                        <?php foreach ($lista as $item): ?>
+                        <tr>
+                            <td><?= $item['id'] ?></td>
+                            <td><?= htmlspecialchars($item['ativo']) ?></td>
+                            <td><?= number_format((float)$item['valor'], 2, ',', '.') ?></td>
+                            <td><?= date('d/m/Y', strtotime($item['data_recebimento'])) ?></td>
+                            <td>
+                                <a href="/dividendos/editar?id=<?= $item['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Ativo</th>
-                    <th>Valor (R$)</th>
-                    <th>Data de Recebimento</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($lista)): ?>
-                <tr>
-                    <td colspan="5" class="text-center">Nenhum dividendo encontrado.</td>
-                </tr>
-                <?php else: ?>
-                <?php foreach ($lista as $item): ?>
-                <tr>
-                    <td><?= $item['id'] ?></td>
-                    <td><?= htmlspecialchars($item['ativo']) ?></td>
-                    <td><?= number_format((float)$item['valor'], 2, ',', '.') ?></td>
-                    <td><?= date('d/m/Y', strtotime($item['data_recebimento'])) ?></td>
-                    <td>
-                        <a href="/dividendos/editar?id=<?= $item['id'] ?>" class="btn btn-edit">Editar</a>
-
-                        <form method="post" action="/dividendos/<?= $item['id'] ?>/delete" style="display:inline;">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="id" value="<?= $item['id'] ?>">
-
-                            <button type="submit" class="btn btn-delete"
-                                onclick="return confirm('Tem certeza que deseja excluir este dividendo?')">
-                                Excluir
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </section>
-</main>
+                                <form method="post" action="/dividendos/<?= $item['id'] ?>/delete" style="display:inline;">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= $item['id'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Tem certeza que deseja excluir este dividendo?')">
+                                        <i class="fas fa-trash"></i> Excluir
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php require BASE_PATH . 'includes/footer.php'; ?>

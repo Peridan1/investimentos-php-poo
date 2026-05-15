@@ -7,6 +7,8 @@ class DashboardController
      */
     public function index(): void
     {
+        requireAuth();
+
         $relatorio = new RelatorioService();
 
         // Período (pode vir via GET futuramente)

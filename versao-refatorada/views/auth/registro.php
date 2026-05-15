@@ -28,45 +28,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $title = "Registro | " . APP_NAME;
 
-include BASE_PATH . 'includes/head.php';
-include BASE_PATH . 'includes/header.php';
+require BASE_PATH . 'includes/header.php';
 ?>
 
-<main class="container py-5">
-    <h1 class="mb-4 text-center">Registrar Usuário</h1>
+<div class="container-fluid p-0">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h1 class="mb-4 text-center h4">Registrar Usuário</h1>
 
-    <div class="card p-4 max-w-md mx-auto">
+                    <?php if (!empty($_SESSION['flash']['erro'])): ?>
+                    <div class="alert alert-danger">
+                        <?= htmlspecialchars($_SESSION['flash']['erro']); ?>
+                    </div>
+                    <?php unset($_SESSION['flash']['erro']); ?>
+                    <?php endif; ?>
 
-        <?php if (!empty($_SESSION['flash']['erro'])): ?>
-        <div class="alert alert-danger">
-            <?= htmlspecialchars($_SESSION['flash']['erro']); ?>
+                    <form method="POST">
+                        <?= csrf_field() ?>
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="senha" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="senha" name="senha" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <?php unset($_SESSION['flash']['erro']); ?>
-        <?php endif; ?>
-
-        <form method="POST">
-            <?= csrf_field() ?>
-
-            <div class="form-group mb-3">
-                <label for="nome">Nome</label>
-                <input type="text" class="form-control" id="nome" name="nome" required>
-            </div>
-
-            <div class="form-group mb-3">
-                <label for="email">E-mail</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-
-            <div class="form-group mb-4">
-                <label for="senha">Senha</label>
-                <input type="password" class="form-control" id="senha" name="senha" required>
-            </div>
-
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Registrar</button>
-            </div>
-        </form>
     </div>
-</main>
+</div>
 
-<?php include BASE_PATH . 'includes/footer.php'; ?>
+<?php require BASE_PATH . 'includes/footer.php'; ?>

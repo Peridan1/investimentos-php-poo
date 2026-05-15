@@ -8,38 +8,47 @@ if (!$dividendo) {
 }
 
 $title = "Editar Dividendo | " . APP_NAME;
-include BASE_PATH . 'includes/head.php';
+require BASE_PATH . 'includes/header.php';
 ?>
 
-<body>
-    <?php include BASE_PATH . 'includes/header.php'; ?>
+<div class="container-fluid p-0">
+    <h1 class="mb-4">Editar Dividendo</h1>
 
-    <main class="container">
-        <h1>Editar Dividendo</h1>
+    <?php if (!empty($mensagem)): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($mensagem) ?></div>
+    <?php endif; ?>
 
-        <?php if (!empty($mensagem)): ?>
-        <p style="color:red;"><?= $mensagem ?></p>
-        <?php endif; ?>
+    <?php if ($dividendo): ?>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="/dividendos/<?= $dividendo['id'] ?>/update" class="row g-3">
+                <?= csrf_field() ?>
 
-        <?php if ($dividendo): ?>
-        <form method="post" action="/dividendos/<?= $dividendo['id'] ?>/update" class="form-editar">
-            <?= csrf_field() ?>
-            <label for="ativo">Ativo:</label>
-            <input type="text" name="ativo" id="ativo" value="<?= htmlspecialchars($dividendo['ativo']) ?>" required>
+                <div class="col-md-4">
+                    <label for="ativo" class="form-label">Ativo:</label>
+                    <input type="text" class="form-control" name="ativo" id="ativo" value="<?= htmlspecialchars($dividendo['ativo']) ?>" required>
+                </div>
 
-            <label for="valor">Valor Recebido (R$):</label>
-            <input type="number" name="valor" id="valor" step="0.01"
-                value="<?= number_format((float)$dividendo['valor'], 2, '.', '') ?>" required>
+                <div class="col-md-4">
+                    <label for="valor" class="form-label">Valor Recebido (R$):</label>
+                    <input type="number" class="form-control" name="valor" id="valor" step="0.01"
+                        value="<?= number_format((float)$dividendo['valor'], 2, '.', '') ?>" required>
+                </div>
 
-            <label for="data_recebimento">Data de Recebimento:</label>
-            <input type="date" name="data_recebimento" id="data_recebimento"
-                value="<?= $dividendo['data_recebimento'] ?>" required>
+                <div class="col-md-4">
+                    <label for="data_recebimento" class="form-label">Data de Recebimento:</label>
+                    <input type="date" class="form-control" name="data_recebimento" id="data_recebimento"
+                        value="<?= $dividendo['data_recebimento'] ?>" required>
+                </div>
 
-            <button type="submit">Salvar Alterações</button>
-            <a href="/dividendos" class="btn-voltar">Voltar</a>
-        </form>
-        <?php endif; ?>
-    </main>
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Salvar Alterações</button>
+                    <a href="/dividendos" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
 
-    <?php include BASE_PATH . 'includes/footer.php'; ?>
-</body>
+<?php require BASE_PATH . 'includes/footer.php'; ?>

@@ -1,24 +1,21 @@
-<?php include BASE_PATH . 'includes/head.php'; ?>
+<?php require BASE_PATH . 'includes/header.php'; ?>
 
+<div class="container-fluid p-0">
+    <h1 class="mb-4">Gerenciar Usuários</h1>
+    <p class="text-muted">Visualize, edite ou exclua usuários cadastrados no sistema.</p>
 
-<?php include BASE_PATH . 'includes/header.php'; ?>
+    <?php if ($mensagem): ?>
+    <div class="alert alert-<?= $tipo === 'sucesso' ? 'success' : 'danger' ?>">
+        <?= htmlspecialchars($mensagem) ?>
+    </div>
+    <?php endif; ?>
 
-<main>
-    <section class="dashboard">
-
-        <h1>Gerenciar Usuários</h1>
-        <p>Visualize, edite ou exclua usuários cadastrados no sistema.</p>
-
-        <?php if ($mensagem): ?>
-        <div class="alert alert-<?= $tipo === 'sucesso' ? 'success' : 'danger' ?>">
-            <?= htmlspecialchars($mensagem) ?>
-        </div>
-        <?php endif; ?>
-
-        <div class="card p-4">
+    <div class="card">
+        <div class="card-header"><h6 class="mb-0">Usuários Cadastrados</h6></div>
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
                         <tr>
                             <th>ID</th>
                             <th>Nome</th>
@@ -31,7 +28,7 @@
 
                         <?php if (empty($usuarios)): ?>
                         <tr>
-                            <td colspan="5" class="text-center text-muted">Nenhum usuário cadastrado</td>
+                            <td colspan="5" class="text-center text-muted py-4">Nenhum usuário cadastrado</td>
                         </tr>
                         <?php else: ?>
                         <?php foreach ($usuarios as $user): ?>
@@ -46,13 +43,13 @@
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= $user['id'] ?>">
                                     <button type="submit" name="excluir"
-                                        onclick="return confirm('Excluir este usuário?')" class="btn btn-delete">
-                                        Excluir
+                                        onclick="return confirm('Excluir este usuário?')" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Excluir
                                     </button>
                                 </form>
 
-                                <a href="/usuarios/editar?id=<?= $user['id'] ?>" class="btn btn-edit">
-                                    Editar
+                                <a href="/usuarios/editar?id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Editar
                                 </a>
                             </td>
                         </tr>
@@ -63,8 +60,7 @@
                 </table>
             </div>
         </div>
+    </div>
+</div>
 
-    </section>
-</main>
-
-<?php include BASE_PATH . 'includes/footer.php'; ?>
+<?php require BASE_PATH . 'includes/footer.php'; ?>

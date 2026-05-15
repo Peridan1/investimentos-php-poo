@@ -1,31 +1,46 @@
 <?php
 // Head + Header
-require BASE_PATH . 'includes/head.php';
 require BASE_PATH . 'includes/header.php';
 ?>
 
-<main class="container">
-    <h1>Cadastrar Compra</h1>
+<div class="container-fluid p-0">
+    <h1 class="mb-4">Cadastrar Compra</h1>
 
     <?php if (!empty($mensagem)): ?>
-    <p class="text-success"><?= htmlspecialchars($mensagem) ?></p>
+    <div class="alert alert-success"><?= htmlspecialchars($mensagem) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="/compras/cadastrar">
-        <label for="ativo">Ativo:</label>
-        <input type="text" name="ativo" id="ativo" required><br>
+    <div class="card" style="max-width: 700px;">
+        <div class="card-body">
+            <form method="POST" action="/compras/cadastrar" class="row g-3">
+                <?= csrf_field() ?>
 
-        <label for="quantidade">Quantidade:</label>
-        <input type="number" name="quantidade" id="quantidade" required><br>
+                <div class="col-md-6">
+                    <label for="ativo" class="form-label">Ativo:</label>
+                    <input type="text" class="form-control" name="ativo" id="ativo" required>
+                </div>
 
-        <label for="valor_unitario">Valor Unitário:</label>
-        <input type="number" step="0.01" name="valor_unitario" id="valor_unitario" required><br>
+                <div class="col-md-6">
+                    <label for="quantidade" class="form-label">Quantidade:</label>
+                    <input type="number" class="form-control" name="quantidade" id="quantidade" required>
+                </div>
 
-        <label for="data_compra">Data da Compra:</label>
-        <input type="date" name="data_compra" id="data_compra" required><br>
+                <div class="col-md-6">
+                    <label for="valor_unitario" class="form-label">Valor Unitário:</label>
+                    <input type="number" step="0.01" class="form-control" name="valor_unitario" id="valor_unitario" required>
+                </div>
 
-        <button type="submit">Cadastrar</button>
-    </form>
-</main>
+                <div class="col-md-6">
+                    <label for="data_compra" class="form-label">Data da Compra:</label>
+                    <input type="date" class="form-control" name="data_compra" id="data_compra" required>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?php require BASE_PATH . 'includes/footer.php'; ?>
