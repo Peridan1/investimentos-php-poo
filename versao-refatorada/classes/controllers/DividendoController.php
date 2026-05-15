@@ -10,49 +10,63 @@ class DividendoController
     }
 
     // GET /dividendos
-    public function index()
+    public function index(): void
     {
-        $dividendos = $this->model->findAll();
-        require __DIR__ . '/../views/dividendos.php';
+        $lista = $this->model->findAll();
+        require VIEW_PATH . 'dividendos.php';
     }
 
     // GET /dividendos/{id}
-    public function show(int $id)
+    public function show(string $id): void
     {
-        $dividendo = $this->model->findById($id);
-        require __DIR__ . '/../views/editar_dividendo.php';
+        $dividendo = $this->model->findById((int) $id);
+        require VIEW_PATH . 'editar_dividendo.php';
     }
 
     // POST /dividendos
-    public function store()
+    public function store(): void
     {
-        $ativo = $_POST['ativo'];
-        $valor = (float)$_POST['valor'];
-        $data = $_POST['data_recebimento'];
+        requireAuth();
+        csrf_verify();
+
+        $ativo = trim($_POST['ativo'] ?? '');
+        $valor = filter_input(INPUT_POST, 'valor', FILTER_VALIDATE_FLOAT);
+        $data  = $_POST['data_recebimento'] ?? '';
+
+        if ($ativo === '' || $valor === false || $valor <= 0 || !strtotime($data)) {
+            $_SESSION['flash']['erro'] = 'Dados inválidos para o dividendo.';
+            header('Location: /dividendos');
+            exit;
+        }
 
         $this->model->adicionar($ativo, $valor, $data);
-
         header('Location: /dividendos');
         exit;
     }
 
     // POST /dividendos/{id}/update
-    public function update(int $id)
+    public function update(string $id): void
     {
-        $ativo = $_POST['ativo'];
+        requireAuth();
+        csrf_verify();
+
+        $ativo = trim($_POST['ativo'] ?? '');
         $valor = (float)$_POST['valor'];
         $data = $_POST['data_recebimento'];
 
-        $this->model->atualizarDividendo($id, $ativo, $valor, $data);
+        $this->model->atualizarDividendo((int) $id, $ativo, $valor, $data);
 
         header('Location: /dividendos');
         exit;
     }
 
     // POST /dividendos/{id}/delete
-    public function destroy(int $id)
+    public function destroy(string $id): void
     {
-        $this->model->delete($id);
+        requireAuth();
+        csrf_verify();
+
+        $this->model->delete((int) $id);
         header('Location: /dividendos');
         exit;
     }

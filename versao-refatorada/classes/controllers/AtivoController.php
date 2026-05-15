@@ -13,17 +13,17 @@ class AtivoController
      * Lista geral de ativos (sem filtro)
      * GET /ativos
      */
-    public function index()
+    public function index(): void
     {
         $ativos = $this->model->calcularPrecoMedio();
-        require __DIR__ . '/../views/ativos.php';
+        require VIEW_PATH . 'ativos.php';
     }
 
     /**
      * Relatório detalhado de ativos com filtro opcional de período
      * GET /ativo?data_inicio=YYYY-MM-DD&data_fim=YYYY-MM-DD
      */
-    public function show()
+    public function show(): void
     {
         $dataInicio = $_GET['data_inicio'] ?? null;
         $dataFim    = $_GET['data_fim'] ?? null;
@@ -34,16 +34,16 @@ class AtivoController
             $relatorio = $this->model->calcularPrecoMedio();
         }
 
-        require __DIR__ . '/../views/ativo.php';
+        require VIEW_PATH . 'ativo.php';
     }
 
     /**
      * Detalhes de um ativo específico
      * GET /ativos/{ativo}
      */
-    public function detalhe(string $ativo)
+    public function detalhe(string $ativo): void
     {
         $detalhes = $this->model->calcularPrecoMedioPorAtivo($ativo);
-        require __DIR__ . '/../views/ativo.php';
+        require VIEW_PATH . 'ativo.php';
     }
 }

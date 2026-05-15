@@ -9,15 +9,20 @@ class CompraController
         $this->model = new Compra();
     }
 
-    public function index()
+    // GET /compras
+    public function index(): void
     {
         $compras = $this->model->findAll();
-        require __DIR__ . '/../views/compras.php';
+        require VIEW_PATH . 'compras.php';
     }
 
-    public function store()
+    // POST /compras
+    public function store(): void
     {
-        $ativo = $_POST['ativo'];
+        requireAuth();
+        csrf_verify();
+
+        $ativo = trim($_POST['ativo'] ?? '');
         $quantidade = (int)$_POST['quantidade'];
         $valorUnitario = (float)$_POST['valor_unitario'];
         $dataCompra = $_POST['data_compra'];
@@ -28,9 +33,13 @@ class CompraController
         exit;
     }
 
-    public function destroy(int $id)
+    // POST /compras/{id}/delete
+    public function destroy(string $id): void
     {
-        $this->model->delete($id);
+        requireAuth();
+        csrf_verify();
+
+        $this->model->delete((int) $id);
         header('Location: /compras');
         exit;
     }
