@@ -43,6 +43,7 @@
 
                             <td class="d-flex gap-2">
                                 <form method="POST">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= $user['id'] ?>">
                                     <button type="submit" name="excluir"
                                         onclick="return confirm('Excluir este usuário?')" class="btn btn-delete">

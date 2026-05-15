@@ -1,25 +1,9 @@
 <?php
-// 1. Bootstrap global (autoload + env + DB)
-require_once dirname(__DIR__) . '/config/config.php';
+// Dados injetados pelo DashboardController:
+// $resumo, $grafico, $inicio, $fim, $totalInvestido, $title
 
-// 2. Instâncias de serviço
-$relatorio = new RelatorioService();
-
-// 3. Período (pode vir via GET futuramente)
-$inicio = '2025-03-01';
-$fim    = '2025-03-31';
-
-// 4. Dados
-$resumo  = $relatorio->getResumoGeral($inicio, $fim);
-$grafico = $relatorio->getGraficoDividendos($inicio, $fim);
-
-// 5. Meta
-$title = "Dashboard | Gestão de Ativos";
-
-require_once BASE_PATH . 'includes/helpers.php';
 include BASE_PATH . 'includes/head.php';
 ?>
-
 
 <?php include BASE_PATH . 'includes/header.php'; ?>
 
@@ -31,7 +15,7 @@ include BASE_PATH . 'includes/head.php';
         <div class="cards">
             <div class="card">
                 <h2>Total Investido</h2>
-                <p>R$ <?= calcularTotalInvestido(); ?></p>
+                <p>R$ <?= htmlspecialchars($totalInvestido) ?></p>
             </div>
             <div class="card">
                 <h2>Total de Dividendos (<?= htmlspecialchars($inicio) ?> a <?= htmlspecialchars($fim) ?>)</h2>
@@ -47,7 +31,6 @@ include BASE_PATH . 'includes/head.php';
 
 <?php include BASE_PATH . 'includes/footer.php'; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('chartDividendos').getContext('2d');
     const chartDividendos = new Chart(ctx, {

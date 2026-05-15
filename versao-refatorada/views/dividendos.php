@@ -17,7 +17,8 @@ require BASE_PATH . 'includes/header.php';
     <section class="card">
         <h2>Novo Dividendo</h2>
 
-        <form method="post" class="form-cadastro">
+        <form method="post" action="/dividendos" class="form-cadastro">
+            <?= csrf_field() ?>
             <input type="hidden" name="acao" value="cadastrar">
 
             <label for="ativo">Ativo:</label>
@@ -80,8 +81,8 @@ require BASE_PATH . 'includes/header.php';
                     <td>
                         <a href="/dividendos/editar?id=<?= $item['id'] ?>" class="btn btn-edit">Editar</a>
 
-                        <form method="post" style="display:inline;">
-                            <input type="hidden" name="acao" value="excluir">
+                        <form method="post" action="/dividendos/<?= $item['id'] ?>/delete" style="display:inline;">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="id" value="<?= $item['id'] ?>">
 
                             <button type="submit" class="btn btn-delete"

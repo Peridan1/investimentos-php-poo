@@ -1,26 +1,9 @@
 <?php
-require_once __DIR__ . '/../config/config.php';
+// Dados injetados pelo NoticiaController:
+// $mensagemErro, $noticias, $termoUsado, $idiomaUsado, $title
 
-$mensagemErro = '';
-$noticias = [];
-$termoUsado = '';
-$idiomaUsado = '';
-
-try {
-    $newsService = new NewsService();
-    $resultado = $newsService->getFinancialNews();
-
-    $noticias   = $resultado['artigos'];
-    $termoUsado = $resultado['termo'];
-    $idiomaUsado = $resultado['idioma'];
-} catch (Exception $e) {
-    $mensagemErro = $e->getMessage();
-}
-
-$title = "Notícias do Mercado | " . APP_NAME;
 include BASE_PATH . 'includes/head.php';
 ?>
-
 
 <?php include BASE_PATH . 'includes/header.php'; ?>
 

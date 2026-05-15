@@ -1,11 +1,7 @@
 <?php
-require_once __DIR__ . '/../config/config.php';
-require_once BASE_PATH . 'classes/CotaService.php';
+// Dados injetados pelo CotaController:
+// $cotacoes, $title
 
-$service = new CotaService();
-$cotacoes = $service->getCotacao('USD-BRL,EUR-BRL,BTC-BRL');
-
-$title = "Cotações | " . APP_NAME;
 include BASE_PATH . 'includes/head.php';
 ?>
 
